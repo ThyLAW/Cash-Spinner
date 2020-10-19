@@ -2,13 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class WheelController : MonoBehaviour
 {
         [Header("Set in Inspector")]
         public GameObject spinner;
+        public TextMeshProUGUI textSpins;
+        public TextMeshProUGUI textBalance;
+        public TextMeshProUGUI textCost;
+        public TextMeshProUGUI textRedColorCost;
+        public TextMeshProUGUI textBlueColorCost;
+        public TextMeshProUGUI textGreenColorCost;
+        public TextMeshProUGUI textGoldColorCost;
+
         [SerializeField]
         public float balance = 1000;
+        public float costAmount = 100;
         float rotationalSpeed = 0;
         bool isClicked = false;
         bool isRewarded = true;
@@ -16,18 +26,32 @@ public class WheelController : MonoBehaviour
         float randomRange = 0;
         float finalAngle = 0;
         float totalAngle = 0;
+        float totalSpins = 0;
+        int redSection = -100;
+        int blueSection = 0;
+        int greenSection = 100;
+        int goldSection = 500;
+
 
         
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        //sets starter texts
+        textBalance.text = "Balance: " + balance;
+        textCost.text = "Cost: " + costAmount;
+        textRedColorCost.text = "Red: " + redSection;
+        textBlueColorCost.text = "Blue: " + blueSection;
+        textGreenColorCost.text = "Green: " + greenSection;
+        textGoldColorCost.text = "Gold: " + goldSection;
+
     }
 
     // Update is called once per frame
     void Update()
     {
+
         //slows down the wheel
        if(isClicked == true){
            transform.Rotate(0,0, this.rotationalSpeed);       
@@ -47,7 +71,7 @@ public class WheelController : MonoBehaviour
         }
         
         //checks if it lands on the line and moves it, then calcualtes final angle
-        if (totalAngle >= 0 && totalAngle <= 0.5 || totalAngle >= 29.5 && totalAngle <= 30.5 || totalAngle >= 59.5 && totalAngle <= 60.5 || totalAngle > 89.5 && totalAngle < 90.5 || totalAngle >= 119.5 && totalAngle <= 120.5 || totalAngle >= 149.5 && totalAngle <= 150.5 || totalAngle >= 179.5 && totalAngle <= 180.5 || totalAngle >= 209.5 && totalAngle <= 210.5 || totalAngle >= 239.5 && totalAngle <= 240.5 || totalAngle >= 269.5 && totalAngle <= 270.5 || totalAngle >= 299.5 && totalAngle <= 300.5 || totalAngle >= 329.5 && totalAngle <= 330.5 || totalAngle >= 335.5 && totalAngle <= 359.9)
+        if (totalAngle > 0 && totalAngle <= 0.2 || totalAngle >= 29.8 && totalAngle <= 30.2 || totalAngle >= 59.8 && totalAngle <= 60.2 || totalAngle > 89.8 && totalAngle < 90.2 || totalAngle >= 119.8 && totalAngle <= 120.2 || totalAngle >= 149.8 && totalAngle <= 150.2 || totalAngle >= 179.8 && totalAngle <= 180.2 || totalAngle >= 209.8 && totalAngle <= 210.2 || totalAngle >= 239.8 && totalAngle <= 240.2 || totalAngle >= 269.8 && totalAngle <= 270.2 || totalAngle >= 299.8 && totalAngle <= 300.2 || totalAngle >= 329.8 && totalAngle <= 330.2 || totalAngle >= 359.8 && totalAngle <= 360)
         {
             transform.Rotate (0,0,6);
             totalAngle = Mathf.RoundToInt(transform.rotation.z);          
@@ -60,69 +84,84 @@ public class WheelController : MonoBehaviour
         // rewards the player for the spin
         if(rotationalSpeed == 0 && isRewarded == false && finalAngleCalculated == true)
         {
-            balance = rewardPlayer(finalAngle, balance);
+            balance = rewardPlayer(finalAngle, balance, redSection, blueSection, greenSection, goldSection);
                         
             isRewarded = true;
-            Debug.Log(balance);
+            textBalance.text = "Balance: " + balance;
         }
     }
 
     //spins the spinner only when clicking on the transform
     void OnMouseDown(){
+        //spins the wheel
         if(isClicked == false){
-         this.rotationalSpeed = 200;
+         this.rotationalSpeed = RandomNumberSpinSpeed(150, 250);
+
+        //subtracts from balance
+        balance -= costAmount;
+        textBalance.text = "Balance: " + balance;
         isClicked = true;
         }
-        randomRange = RandomNumber(.98f, .99f);
+        //gets a random number to slow it down
+        randomRange = RandomNumberSlow(.98f, .99f);
+        //resets conditions
         isRewarded = false;
         finalAngleCalculated = false;
+        //adds spins
+       totalSpins += 1;
+       textSpins.text = "Spins: " + totalSpins; 
+
     }
 
-    //gets a random number
-   public float RandomNumber(float number, float number2)
+    //gets a random number to slow
+   public float RandomNumberSlow(float number, float number2)
+    {
+        float return1 = Random.Range(number, number2);
+        return return1;
+        
+    }
+    //gets a random number for number of spins
+    public float RandomNumberSpinSpeed(float number, float number2)
     {
         float return1 = Random.Range(number, number2);
         return return1;
         
     }
 
-    public static int rewardPlayer(float finalAngle, float balance){
-        int redSection = -100;
-        int blueSection = 0;
-        int greenSection = 100;
-        int goldSection = 200;
-        if (finalAngle >= 0 && finalAngle < 29.5){
+    public static int rewardPlayer(float finalAngle, float balance, int redSection, int blueSection, int greenSection, int goldSection){
+
+        if (finalAngle >= 0 && finalAngle < 29.8){
             balance += redSection;
         }
-        else if (finalAngle >= 30 && finalAngle < 59.5){
+        else if (finalAngle >= 30 && finalAngle < 59.8){
             balance += greenSection;
         }
-        else if (finalAngle >= 60 && finalAngle < 89.5){
+        else if (finalAngle >= 60 && finalAngle < 89.8){
             balance += redSection;
         }
-        else if (finalAngle >= 90 && finalAngle < 119.5){
+        else if (finalAngle >= 90 && finalAngle < 119.8){
             balance += goldSection;
         }
-        else if (finalAngle >= 120 && finalAngle <  149.5){
+        else if (finalAngle >= 120 && finalAngle <  149.8){
             balance += blueSection;
         }
-          else if (finalAngle >= 150 && finalAngle <  179.5){
+          else if (finalAngle >= 150 && finalAngle <  179.8){
             balance += greenSection;
         }
-         else if (finalAngle >= 180 && finalAngle < 210.5){
+         else if (finalAngle >= 180 && finalAngle < 210.8){
             balance += goldSection;
         }
-         else if (finalAngle >= 210 && finalAngle < 239.5){
+         else if (finalAngle >= 210 && finalAngle < 239.8){
             balance += blueSection;
         }
-         else if (finalAngle >= 240 && finalAngle < 269.5){
+         else if (finalAngle >= 240 && finalAngle < 269.8){
             balance += redSection;
          }
-         else if (finalAngle >= 270 && finalAngle < 299.5){
+         else if (finalAngle >= 270 && finalAngle < 299.8){
             balance += goldSection;} 
-        else if (finalAngle >= 300 && finalAngle < 329.5){
+        else if (finalAngle >= 300 && finalAngle < 329.8){
             balance += blueSection;
-        } else if (finalAngle >= 330 && finalAngle < 360){
+        } else if (finalAngle >= 330 && finalAngle < 359.8){
             balance += greenSection;
         }
 
