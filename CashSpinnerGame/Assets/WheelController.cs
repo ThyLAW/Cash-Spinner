@@ -102,14 +102,15 @@ public class WheelController : MonoBehaviour
         balance -= costAmount;
         textBalance.text = "Balance: " + balance;
         isClicked = true;
+
+        //adds spins
+        totalSpins += 1;
         }
         //gets a random number to slow it down
         randomRange = RandomNumberSlow(.98f, .99f);
         //resets conditions
         isRewarded = false;
         finalAngleCalculated = false;
-        //adds spins
-       totalSpins += 1;
        textSpins.text = "Spins: " + totalSpins; 
 
     }
@@ -173,6 +174,8 @@ public class WheelController : MonoBehaviour
 
 void FixedUpdate()
 {
+
+    // if balance = 0, game over screen displays
     if(balance <= 0 && isRewarded == true)
     {
          SceneManager.LoadScene("sceneGameOver");
