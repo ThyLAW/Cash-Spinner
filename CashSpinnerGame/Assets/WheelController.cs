@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class WheelController : MonoBehaviour
 {
@@ -128,6 +129,8 @@ public class WheelController : MonoBehaviour
         
     }
 
+    //rewards player
+
     public static int rewardPlayer(float finalAngle, float balance, int redSection, int blueSection, int greenSection, int goldSection){
 
         if (finalAngle >= 0 && finalAngle < 29.8){
@@ -168,5 +171,12 @@ public class WheelController : MonoBehaviour
         return (int)balance;
     }
 
-
+void FixedUpdate()
+{
+    if(balance <= 0 && isRewarded == true)
+    {
+         SceneManager.LoadScene("sceneGameOver");
+         SceneManager.SetActiveScene(SceneManager.GetSceneByName("sceneGameOver"));
+    }
+}
 }

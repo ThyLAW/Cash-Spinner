@@ -20,6 +20,7 @@ public class ExitGameScript : MonoBehaviour
 
         void OnMouseDown()
     {
+        //exits game
         Application.Quit();
     }
 }
